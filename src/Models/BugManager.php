@@ -67,7 +67,7 @@
       $date = $date->format('Y-m-d H:i:s');
 
       $ip = $this->GetIpNDD($newBug->getNDD());
-      $ipURL = $this->getIpURL($newBug->getIpURL());
+      $ipURL = $this->getIpURL($newBug->getURL());
 
       $state = $bdd->prepare("INSERT INTO `bug` (titre, description, statut, createdAt, NDD, IP, ipURL, URL)
        VALUE (:title, :description, :statut, :createdAt, :NDD, :IP, :ipURL, :URL)");
