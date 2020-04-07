@@ -7,38 +7,29 @@ class BugController{
     
     public function Add(){
         $bugManager = new BugManager();
-        // $bug = json_encode("",$_POST['titre'],$_POST['description'],$_POST['statut'],"",$_POST['NDD'],"","",$_POST['URL']);
-        $bug = json_encode();
+        $bug = new Bug("",$_POST['titre'],$_POST['description'],$_POST['statut'],"",$_POST['NDD'],"","",$_POST['URL']);
+        // dd($bug);
         $bugManager->addBug($bug);
         
-        return $this->sendJsonResponse($content, 200);
+        return $this->sendJsonResponse($bug, 200);
         //retrun json
     }
     
     public function List(){
         $bugManager = new BugManager();
         $bugs = $bugManager->FindAll();
-        dd($bugs);
-        foreach ($bugs as $bug) {
-            $content = json_encode([
-                'titre' => $bug->getTitre(),
-                'description' => $bug->getDescription(),
-                'statut' => $bug->getStatut(),
-                'NDD' => $bug->getNdd(),
-                'IP' => $bug->getIp(),
-                'URL' => $bug->getURL(),
-            ]);
-            $content += $content;
-        }
-        dd($content);
-        return $this->sendJsonResponse($content, 200);
-        //return du json
+        $json = json_encode($bugs);
+
+        return $this->sendJsonResponse($json, 200);
     }
 
     public function Show($id){
 
+        $bugManager = new BugManager();
+        $bug = $bugManager->Find($id);
+        $json = json_encode($bug);
 
-        return $this->sendJsonResponse($content, 200); 
+        return $this->sendJsonResponse($json, 200);
         //return du json   
     }
 
@@ -46,13 +37,13 @@ class BugController{
     public static function sendJsonResponse($content, $code = 200){
         http_response_code($code);
 
-        header('content-type: text/http');
-
+        header('Content-Type', 'application/json');
+        dd($content);
         echo $content;
     }
 
     public function Error(){
-        $content = $this->render('404',[]);
+        $content = 'Error 404';
         
         return $this->sendJsonResponse($content, 200);
     }

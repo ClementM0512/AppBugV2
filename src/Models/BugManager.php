@@ -35,17 +35,27 @@
       $state = $bdd->prepare('SELECT * FROM `bug` WHERE id=:id');
       $state->execute(['id' => $id]);
 
-      $data = $state->fetch(\PDO::FETCH_ASSOC);
-      $bug = new Bug($data['id'], $data['titre'], $data['description'], $data['statut'], $data['createdAt'], 
-      $data['NDD'] , $data['IP'], $data['ipURL'], $data['URL']);
+      $donnee = $state->fetch(\PDO::FETCH_ASSOC);
+      $bug = new Bug($donnee['id'], $donnee['titre'], $donnee['description'], $donnee['statut'], $donnee['createdAt'], 
+      $donnee['NDD'] , $donnee['IP'], $donnee['ipURL'], $donnee['URL']);
 
       return($bug);
     }
 
     public function FindAll() {
-      foreach($this->bugs as $bug){
+      $bdd = $this->connexionBdd();
+
+        $bugs = $bdd->query('SELECT * FROM `bug` ORDER BY `id`', \PDO::FETCH_ASSOC);
+
+        // Parcours des résultats
+        while ($donnee=$bugs->fetch()) {
+          $bug = new Bug($donnee['id'], $donnee['titre'], $donnee['description'], $donnee['statut'], $donnee['createdAt'], 
+          $donnee['NDD'] , $donnee['IP'], $donnee['ipURL'], $donnee['URL']);
+         
+          $this->bugs[] = $bug;
+        }
+
         return $this->bugs;
-      }
     }
 
     public function load(){

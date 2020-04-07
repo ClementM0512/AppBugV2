@@ -1,40 +1,47 @@
 <?php
 require "vendor/autoload.php";
+require_once "params.php";
+
 use AppBug\Controller\BugController;
 use AppBug\Models\BugManager;
+
 // var_dump($_SERVER["REQUEST_URI"]);
+$method = $_SERVER['REQUEST_METHOD'];
 
-$arguments = explode("/", $_SERVER["REQUEST_URI"]);
+$length = strlen(base_url);
 
-// var_dump($arguments);
+$uri = substr($_SERVER['REQUEST_URI'], $length + 1);
 
-
-
-switch ($arguments[4]) {
-
-    case "":
-    case "list":
-        $mana = new BugManager();
-        $mana->FindByStatut();
-
-        return (new BugController())->List();
+switch (true) {
+    case $uri == "":
+        header("Location: bug");
         break;
-    case "show":
-        $id = $arguments[5];
+    case preg_match('#^bug/(\d+)$#', $uri, $matches) && $method == 'GET':
+        // dd('b');
+        $id = $matches[1];
         return (new BugController())->Show($id);
         break;
-    case "add":
+    case preg_match('#^bug(|\?.)#', $uri) && $method == 'GET':
+        // dd('a');
+        return (new BugController())->List();
+        break;
+    
+    case preg_match('#^bug$#', $uri) && $method == 'POST':
+        // dd('c');
         return (new BugController())->Add();
         break;
-    case "updt":
-        $idBug = $arguments[5];
-        return (new BugController())->Update($idBug);
-        break;
-    case "edit":
-        $idBug = $arguments[5];
-        return (new BugController())->Update($idBug);
-        break;
+    // case "updt":
+    //     dd('d');
+    //     $idBug = $arguments[5];
+    //     return (new BugController())->Update($idBug);
+    //     break;
+    // case "edit":
+    //     dd('e');
+    //     $idBug = $arguments[5];
+    //     return (new BugController())->Update($idBug);
+    //     break;
     default:
+        dd('test');
         return (new BugController())->Error(); //Erreur 404
 }
 

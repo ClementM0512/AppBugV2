@@ -5,7 +5,8 @@ class Manager{
   function connexionBdd(){
 
     // require_once('params.php');
-
+    //params perdu du coup mise des données en dur
+    //MAUVAISE FACON DE FAIRE
     try
     {
       $pdo_options[\PDO::ATTR_ERRMODE] = \PDO::ERRMODE_EXCEPTION;
